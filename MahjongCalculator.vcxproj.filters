@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\Tiles">
+      <UniqueIdentifier>{d77260e6-05e9-4fe3-bf47-84428cb56db4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MahjongCalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MahjongCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MahjongCalculator.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="MahjongCalculator.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Tiles\1m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\1p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\1s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\2m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\2p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\2s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\3m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\3p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\3s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\4m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\4p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\4s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\5m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\5p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\5s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\6m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\6p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\6s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\7m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\7p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\7s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\8m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\8p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\8s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\9m.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\9p.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\9s.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\ew.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\gd.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\nw.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\rd.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\sw.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\wd.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+    <Image Include="Tiles\ww.bmp">
+      <Filter>Resource Files\Tiles</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
