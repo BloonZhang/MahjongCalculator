@@ -4,12 +4,25 @@
 
 class Storage
 {
+    // members
+public:
 private:
+    // Storage for all tiles in a multidimesional array.
+    // tileStorage[0] is manzu
+    // tileStorage[1] is pinzu
+    // tileStorage[2] is souzu
+    // tileStorage[3] is honor tiles. Note that tileStorage[3][7] and tileStorage[3][8] do not represent any tile and should not be used. 
     int tileStorage[4][9]{};
+
+    // methods
 public:
     Storage() {};
+
+    //   FUNCTION: Add(const wchar_t*)
+    //   PURPOSE: Adds the specified tile to storage.
     void Add(const wchar_t* tile)
     {
+        // convert const wchar_t* to char*
         char name[5];
         wcstombs_s(nullptr, name, sizeof(name), tile, sizeof(name) - 1);
         // number tile
@@ -65,11 +78,18 @@ public:
             case 'n':
                 ++tileStorage[3][3];
                 break;
-            default:        // error
+            default:
                 break;
             }
         }
+        // Error: invalid tile
+        // TODO: handle invalid tile input
     }
+
+    //   FUNCTION: Calculate(std::wstring& message)
+    //   PURPOSE: Adds the specified tile to storage.
+    //   RETURNS: function returns true if success, false if fail.
+    //            message contains the message to be output by the main window.
     bool Calculate(std::wstring& message)
     {
         // Count tiles in hand. If not 14, then return false with corresponding message
@@ -98,7 +118,6 @@ public:
             message = L"This is a winning hand!";
             return true;
         }
-
         // Check for normal hand
         if (SubtractMeldRecursive(tileStorage)) {
             message = L"This is a winning hand!";
@@ -109,12 +128,16 @@ public:
         message = L"This is not a winning hand.";
         return false;
     }
+
+    //   FUNCTION: Reset()
+    //   PURPOSE: Resets the tileStorage back to all 0.
     void Reset()
     {
         memset(tileStorage, 0, 36 * (sizeof(int)));
     }
 
 private:
+    // Returns number of tiles in storage
     int CountTiles()
     {
         int numberOfTiles = 0;
@@ -127,13 +150,14 @@ private:
         }
         return numberOfTiles;
     }
+    // Check if any tile has more than 4 copies
     bool CheckInvalid()
     {
         for (auto& suit : tileStorage)
         {
             for (int& count : suit)
             {
-                if (count >4)
+                if (count > 4)
                 {
                     return true;
                 }
@@ -141,6 +165,7 @@ private:
         }
         return false;
     }
+    // Check if hand is a chiitoitsu (7 pairs) hand
     bool CheckChiitoitsu()
     {
         int pairCount = 0;
@@ -156,9 +181,9 @@ private:
         }
         return pairCount == 7;
     }
+    // Check if hand is a kokushi (13 orphans) hand
     bool CheckKokushi()
     {
-        // Check that all tiles are present
         bool allTerminals =
             tileStorage[0][0] && tileStorage[0][8] &&
             tileStorage[1][0] && tileStorage[1][8] &&
@@ -166,23 +191,20 @@ private:
         bool allHonors =
             tileStorage[3][0] && tileStorage[3][1] && tileStorage[3][2] && tileStorage[3][3] &&
             tileStorage[3][4] && tileStorage[3][5] && tileStorage[3][6];
-        return allTerminals && allHonors && HasPair(tileStorage);
-    }
-
-    bool HasPair(int (&tempArray)[4][9])
-    {
-        for (auto& suit : tempArray)
+        bool hasPair = false;
+        for (auto& suit : tileStorage)
         {
             for (int& count : suit)
             {
                 if (count == 2)
                 {
-                    return true;
+                    hasPair = true;
                 }
             }
         }
-        return false;
+        return allTerminals && allHonors && hasPair;
     }
+    // Check if remaining hand is only a pair of tiles and nothing else
     bool HasPairOnly(int(&tempArray)[4][9])
     {
         bool pairFound = false;
@@ -206,6 +228,7 @@ private:
         }
         return pairFound;
     }
+    // Recursive function to determine if a hand is a winning hand or not.
     bool SubtractMeldRecursive(int(&tempArray)[4][9])
     {
         // Check only pair left
@@ -271,7 +294,7 @@ private:
                 }
             }
         }
-        // No sequences or triples or pair
+        // No sequences or triplets or pair
         return false;
     }
 };

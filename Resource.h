@@ -16,7 +16,7 @@
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
 #endif
-// Next default values for new objects
+// Values for tiles
 #define TILE_1M             501
 #define TILE_2M             502
 #define TILE_3M             503
@@ -53,7 +53,7 @@
 #define TILE_RD             807
 #define TILE_RESET			900
 #define TILE_CALCULATE		901
-//
+
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 

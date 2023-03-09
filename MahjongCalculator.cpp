@@ -1,5 +1,4 @@
 // MahjongCalculator.cpp : Defines the entry point for the application.
-//
 
 #include "framework.h"
 #include "MahjongCalculator.h"
@@ -23,14 +22,16 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-// helper functions
-VOID                CreateTileButton(HWND, HMENU, const wchar_t*, int, int);
+// functions for setup
+VOID                LoadBitmapMap();
 VOID                CreateButtons(HWND);
+VOID                CreateTileButton(HWND, HMENU, const wchar_t*, int, int);
+// helper functions
 VOID                DrawTileBitmap(HDC, const wchar_t*, int);
 BOOL                AddTileToHand(const wchar_t*);
 VOID                Reset(HDC);
 VOID                PrintText(HDC, std::wstring);
-VOID                LoadBitmapMap();
+// functions for closing
 VOID                DeleteBitmapMap();
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -58,9 +59,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MAHJONGCALCULATOR));
 
-    MSG msg;
-
     // Main message loop:
+    MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0))
     {
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
@@ -73,13 +73,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int) msg.wParam;
 }
 
-
-
-//
 //  FUNCTION: MyRegisterClass()
-//
 //  PURPOSE: Registers the window class.
-//
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
@@ -101,16 +96,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-//
 //   FUNCTION: InitInstance(HINSTANCE, int)
-//
 //   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
@@ -129,16 +116,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-//
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
 //  PURPOSE: Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -324,7 +303,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 }
                 break;
             case TILE_RESET:
-                myStorage.Reset();
                 Reset(GetDC(hWnd));
                 RedrawWindow(hWnd, nullptr, nullptr, RDW_INVALIDATE | RDW_ERASE);
                 break;
@@ -332,9 +310,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 std::wstring message;
                 myStorage.Calculate(message);
-
+                // Print the message
                 MessageBox(hWnd, message.c_str(), nullptr, MB_OK);
-                //PrintText(GetDC(hWnd), message);
+                // TODO: print it to the window instead of a popup
+                // PrintText(GetDC(hWnd), message);
             }
                 break;
             case IDM_ABOUT:
@@ -352,7 +331,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+            // (re)Draw all tiles in tilesInHand
             int count = 0;
             for (const wchar_t* tile : tilesInHand)
             {
@@ -392,28 +371,51 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-
-//
-//  FUNCTION: CreateTileButton(HWND, HMENU, const wchar_t*, const wchar_t*, int, int)
-//
-//  PURPOSE: Creates a button at the specified x and y
-//
-VOID CreateTileButton(HWND hWnd, HMENU identifier, const wchar_t* tile, int x, int y)
+//  FUNCTION: LoadBitmapMap()
+//  PURPOSE: Loads the bitmap map for all the tiles
+VOID LoadBitmapMap()
 {
-    HWND myButton;
-    myButton = CreateWindowW(L"BUTTON", tile,
-        WS_VISIBLE | WS_CHILD | BS_BITMAP,
-        x, y, 55, 88,
-        hWnd, identifier, nullptr, nullptr);
-    SendMessageW(myButton, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bitmapMap[tile]);
+    bitmapMap[L"1m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\1m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"2m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\2m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"3m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\3m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"4m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\4m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"5m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\5m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"6m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\6m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"7m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\7m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"8m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\8m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"9m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\9m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"1p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\1p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"2p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\2p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"3p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\3p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"4p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\4p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"5p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\5p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"6p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\6p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"7p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\7p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"8p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\8p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"9p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\9p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"1s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\1s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"2s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\2s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"3s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\3s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"4s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\4s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"5s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\5s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"6s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\6s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"7s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\7s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"8s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\8s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"9s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\9s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"ew"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\ew.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"sw"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\sw.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"ww"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\ww.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"nw"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\nw.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"wd"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\wd.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"gd"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\gd.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+    bitmapMap[L"rd"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\rd.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
 }
-//
+
 //  FUNCTION: CreateButtons(HWND)
-//
-//  PURPOSE: Sets up buttons for all tiles
-//
+//  PURPOSE: Sets up buttons for all tiles, as well as reset and calculate
 VOID CreateButtons(HWND hWnd)
 {
+    // Reset and Calculate button
     CreateWindowW(L"BUTTON", L"RESET",
         WS_VISIBLE | WS_CHILD,
         750, 10, 90, 50,
@@ -422,6 +424,7 @@ VOID CreateButtons(HWND hWnd)
         WS_VISIBLE | WS_CHILD,
         750, 100, 90, 50,
         hWnd, (HMENU)TILE_CALCULATE, nullptr, nullptr);
+    // Buttons for all tiles
     int startingX = 20;
     int incrementX = 60;
     int startingY = 10;
@@ -460,14 +463,22 @@ VOID CreateButtons(HWND hWnd)
     CreateTileButton(hWnd, (HMENU)TILE_WD, L"wd", startingX + 4 * incrementX, startingY + 3 * incrementY);
     CreateTileButton(hWnd, (HMENU)TILE_GD, L"gd", startingX + 5 * incrementX, startingY + 3 * incrementY);
     CreateTileButton(hWnd, (HMENU)TILE_RD, L"rd", startingX + 6 * incrementX, startingY + 3 * incrementY);
-
-
 }
-//
+
+//  FUNCTION: CreateTileButton(HWND, HMENU, const wchar_t*, int, int)
+//  PURPOSE: Creates a button at the specified x and y
+VOID CreateTileButton(HWND hWnd, HMENU identifier, const wchar_t* tile, int x, int y)
+{
+    HWND myButton;
+    myButton = CreateWindowW(L"BUTTON", tile,
+        WS_VISIBLE | WS_CHILD | BS_BITMAP,
+        x, y, 55, 88,
+        hWnd, identifier, nullptr, nullptr);
+    SendMessageW(myButton, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bitmapMap[tile]);
+}
+
 //  FUNCTION: DrawTileBitmap(hdc, const wchar_t*, int)
-//
-//  PURPOSE: Draws a tile bitmap at the position corresponding to the number
-//
+//  PURPOSE: Draws a single tile bitmap
 VOID DrawTileBitmap(HDC hdc, const wchar_t* tile, int pos)
 {
     int startingX = 20;
@@ -479,15 +490,13 @@ VOID DrawTileBitmap(HDC hdc, const wchar_t* tile, int pos)
     HBITMAP bitmapOld = (HBITMAP)SelectObject(hdcMem, bitmap);
     GetObject(bitmap, sizeof(bitmapInfo), &bitmapInfo);
     BitBlt(hdc, startingX + pos * incrementX, Y, bitmapInfo.bmWidth, bitmapInfo.bmHeight, hdcMem, 0, 0, SRCCOPY);
-
+    // Clean up
     SelectObject(hdcMem, bitmapOld); DeleteDC(hdcMem);
 }
-//
+
 //  FUNCTION: AddTileToHand(const wchar_t*)
-//
-//  PURPOSE: Adds a tile to the hand
+//  PURPOSE: Adds a tile to the hand and to Storage
 //  RETURN:  true if success, false if fail
-//
 BOOL AddTileToHand(const wchar_t* tile)
 {
     if (tilesInHand.size() < 0 || tilesInHand.size() >= 14)
@@ -498,72 +507,24 @@ BOOL AddTileToHand(const wchar_t* tile)
     tilesInHand.push_back(tile);
     return true;
 }
-//
+
 //  FUNCTION: Reset(HDC)
-//
 //  PURPOSE: Erases all tiles and removes them from Storage
-//
 VOID Reset(HDC hdc)
 {
+    myStorage.Reset();
     tilesInHand.clear();
 }
-//
+
 //  FUNCTION: PrintText(HDc, std::wstring)
-//
 //  PURPOSE: Prints a string to the window
-//
 VOID PrintText(HDC hdc, std::wstring message)
 {
-    // get font
+    // TODO: print to window. For now, text is printed to a pop-up window
+}
 
-}
-//
-//  FUNCTION: LoadBitmapMap()
-//
-//  PURPOSE: Loads the bitmap map for all the tiles
-//
-VOID LoadBitmapMap()
-{
-    bitmapMap[L"1m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\1m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"2m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\2m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"3m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\3m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"4m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\4m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"5m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\5m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"6m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\6m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"7m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\7m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"8m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\8m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"9m"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\9m.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"1p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\1p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"2p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\2p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"3p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\3p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"4p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\4p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"5p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\5p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"6p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\6p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"7p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\7p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"8p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\8p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"9p"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\9p.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"1s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\1s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"2s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\2s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"3s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\3s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"4s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\4s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"5s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\5s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"6s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\6s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"7s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\7s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"8s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\8s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"9s"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\9s.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"ew"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\ew.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"sw"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\sw.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"ww"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\ww.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"nw"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\nw.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"wd"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\wd.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"gd"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\gd.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-    bitmapMap[L"rd"] = (HBITMAP)LoadImageW(nullptr, L"Tiles\\rd.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR | LR_LOADFROMFILE);
-}
-//
 //  FUNCTION: DeleteBitmapMap()
-//
-//  PURPOSE: Deletes the bitmap map for all the tiles
-//
+//  PURPOSE: Deletes the bitmap map for all tiles
 VOID DeleteBitmapMap()
 {
     for (std::map< const wchar_t*, HBITMAP>::iterator it = bitmapMap.begin(); it != bitmapMap.end(); ++it)
