@@ -42,8 +42,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: Place code here.
-
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_MAHJONGCALCULATOR, szWindowClass, MAX_LOADSTRING);
@@ -311,7 +309,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 std::wstring message;
                 myStorage.Calculate(message);
                 // Print the message
-                MessageBox(hWnd, message.c_str(), nullptr, MB_OK);
+                MessageBox(hWnd, message.c_str(), L"Result", MB_OK);
                 // TODO: print it to the window instead of a popup
                 // PrintText(GetDC(hWnd), message);
             }
